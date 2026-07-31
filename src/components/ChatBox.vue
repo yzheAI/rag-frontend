@@ -15,7 +15,7 @@ async function chat(){
         return
 
     // 保存用户输入的问题文本
-    const userQuestion=query.value
+    const userQuestion = query.value
 
     // 用户输入聊天记录
     messages.value.push({
@@ -34,80 +34,108 @@ async function chat(){
         content:""
     }
     messages.value.push(aiMessage)
-
-    // // 调用后端流式对话接口
+  try {
+    // 调用后端流式对话接口
     const response = await fetch(
         "http://127.0.0.1:8000/chat/chat/stream",
         {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
 
-                query:userQuestion,
+            query: userQuestion,
 
-                kb_name:store.kbName
+            kb_name: store.kbName
 
-            })
+          })
         }
     )
+    if (!response.ok) {
+
+      throw new Error(
+          "服务器响应异常"
+      )
+
+    }
+
 
     // 获取响应流读取器，分片读取后端持续推送的数据块
     const reader = response.body.getReader()
 
 
-    while(true){
+    while (true) {
 
-        const {
-            done,
-            value
-        } = await reader.read()
-
-
-        if(done)
-            break
+      const {
+        done,
+        value
+      } = await reader.read()
 
 
-        const text =
-        new TextDecoder()
-        .decode(value)
+      if (done)
+        break
+
+
+      const text =
+          new TextDecoder()
+              .decode(value)
 
       const events = text.split("\n\n")
 
 
-      for(const event of events){
+      for (const event of events) {
 
-          if(!event.trim())
-              continue
-
-
-          if(event.startsWith("event: source")){
-
-              const json =
-                  event.split("data: ")[1]
+        if (!event.trim())
+          continue
 
 
-              store.sources =
-                  JSON.parse(json)
+        if (event.startsWith("event: source")) {
 
-          }
-
-
-          if(event.startsWith("event: message")){
+          const json =
+              event.split("data: ")[1]
 
 
-              const token =
-                  event.split("data: ")[1]
+          store.sources =
+              JSON.parse(json)
+
+        }
 
 
-              aiMessage.content += token
+        if (event.startsWith("event: message")) {
 
-          }
+
+          const token =
+              event.split("data: ")[1]
+
+
+          aiMessage.content += token
+
+        }
 
       }
     }
-    loading.value=false
+  }catch(error){
+
+
+        console.error(
+            "聊天失败:",
+            error
+        )
+
+
+        aiMessage.content =
+            "抱歉，服务暂时不可用，请稍后再试。"
+
+
+
+    }finally{
+
+
+        loading.value=false
+
+
+    }
 
 }
 </script>

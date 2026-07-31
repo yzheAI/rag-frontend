@@ -1,42 +1,71 @@
 <script setup>
 import {getFileList} from "@/api/file"
-import {ref,onMounted} from "vue"
+import {ref,onMounted, watch} from "vue"
 import {useKnowledgeStore} from "@/stores/knowledge"
 import axios from "axios"
+import { ElMessageBox, ElMessage } from "element-plus"
 
 const store = useKnowledgeStore()
 
 
 async function getFiles(){
     // GET请求，通过url传参kb_name筛选知识库
-    const res =
-    await getFileList(store.kbName)
+    const res = await getFileList(store.kbName)
 
-
-    store.files =
-    res.data.data.files
+    store.files = res.data.data.files
 
 }
 
-
-async function deleteFile(id){
-    // 发出delete请求，id拼接在url路径上
-    await axios.delete(
-        `http://127.0.0.1:8000/files/${id}`,
-        {
-            params:{
-                kb_name:store.kbName
-            }
-        }
-    )
-    // 删除后刷新列表
-    await getFiles()
-
-}
 
 onMounted(()=>{
     getFiles()
 })
+
+watch(
+    ()=>store.kbName,
+    ()=>{
+        getFiles()
+    }
+)
+
+
+async function deleteFile(id){
+  try {
+
+    await ElMessageBox.confirm(
+        "确定删除这个文件吗？",
+        "删除确认",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+    )
+
+    // 发出delete请求，id拼接在url路径上
+    await axios.delete(
+        `http://127.0.0.1:8000/files/${id}`,
+        {
+          params: {
+            kb_name: store.kbName
+          }
+        }
+    )
+    // 删除后刷新列表
+    await getFiles()
+  }catch(error){
+
+        // 用户点击取消时不处理
+
+        if(error !== "cancel"){
+            ElMessage.error("删除失败")
+        }
+
+    }
+
+
+}
+
 
 </script>
 

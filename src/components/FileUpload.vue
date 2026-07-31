@@ -3,8 +3,10 @@ import axios from "axios";
 import {ref} from "vue";
 import {useKnowledgeStore} from "@/stores/knowledge";
 import {getFileList} from "@/api/file"
+import {ElMessage} from "element-plus";
 const store=useKnowledgeStore()
 const file = ref(null)
+const uploading = ref(false)
 
 
 function chooseFile(e){
@@ -22,6 +24,8 @@ async function upload(){
         return
     }
 
+    uploading.value=true
+  try {
 
     const formData = new FormData()
     // 追加文件字段，后端接收参数字段为 file
@@ -49,6 +53,15 @@ async function upload(){
 
 
     store.files = res.data.data.files
+  }catch(error){
+
+        ElMessage.error("上传失败")
+
+    }finally{
+
+        uploading.value=false
+
+    }
 
 }
 </script>
@@ -70,6 +83,7 @@ type="file"
 <el-button
 type="primary"
 @click="upload"
+:loading="uploading"
 >
 上传
 </el-button>
