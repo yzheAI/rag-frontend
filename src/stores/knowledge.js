@@ -6,6 +6,7 @@ export const useKnowledgeStore = defineStore(
  state:()=>({
      kbName:"copper_based",
      files:[],
-     sources:[]
+     sources:[],
+     messages:[]
  })
 })

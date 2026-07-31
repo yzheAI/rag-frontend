@@ -1,12 +1,14 @@
 <script setup>
 import { useKnowledgeStore } from "@/stores/knowledge"
-import {ref} from "vue";
+import {ref, computed} from "vue";
 const store=useKnowledgeStore()
 
 
 const query = ref("")
 const loading = ref(false)
-const messages = ref([])
+const messages = computed(
+()=>store.messages
+)
 
 
 async function chat(){
@@ -18,7 +20,7 @@ async function chat(){
     const userQuestion = query.value
 
     // 用户输入聊天记录
-    messages.value.push({
+    store.messages.push({
         role:"user",
         content:userQuestion
     })
@@ -33,7 +35,7 @@ async function chat(){
         role:"assistant",
         content:""
     }
-    messages.value.push(aiMessage)
+    store.messages.push(aiMessage)
   try {
     // 调用后端流式对话接口
     const response = await fetch(
@@ -138,6 +140,12 @@ async function chat(){
     }
 
 }
+
+function clearChat(){
+  store.messages=[]
+  store.sources=[]
+}
+
 </script>
 
 <template>
@@ -194,7 +202,12 @@ type="success"
 发送
 </el-button>
 
-
+<el-button
+type="danger"
+@click="clearChat"
+>
+清空对话
+</el-button>
 
 </el-card>
 </template>
