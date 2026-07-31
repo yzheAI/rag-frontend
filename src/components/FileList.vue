@@ -1,6 +1,6 @@
 <script setup>
 import {getFileList} from "@/api/file"
-import {ref,onMounted, watch} from "vue"
+import {onMounted, watch} from "vue"
 import {useKnowledgeStore} from "@/stores/knowledge"
 import axios from "axios"
 import { ElMessageBox, ElMessage } from "element-plus"
