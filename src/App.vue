@@ -16,6 +16,8 @@ const messages = ref([])
 
 const loading = ref(false)
 
+const sources = ref([])
+
 
 // 选中第一个文件存入响应式变量
 function chooseFile(e){
@@ -160,13 +162,44 @@ async function chat(){
             break
 
 
-        aiMessage.content +=
-            new TextDecoder()
-            .decode(value)
+        const text =
+        new TextDecoder()
+        .decode(value)
 
+      const events = text.split("\n\n")
+
+
+      for(const event of events){
+
+          if(!event.trim())
+              continue
+
+
+          if(event.startsWith("event: source")){
+
+              const json =
+                  event.split("data: ")[1]
+
+
+              sources.value =
+                  JSON.parse(json)
+
+          }
+
+
+          if(event.startsWith("event: message")){
+
+
+              const token =
+                  event.split("data: ")[1]
+
+
+              aiMessage.content += token
+
+          }
+
+      }
     }
-
-
     loading.value=false
 
 }
@@ -288,7 +321,31 @@ size="small"
 
 </el-card>
 
+<el-card>
 
+<h3>
+参考来源
+</h3>
+
+
+<div
+v-for="item in sources"
+:key="item.chunk_id"
+>
+
+文件:
+{{item.source}}
+
+<br>
+
+相关度:
+{{item.score.toFixed(3)}}
+
+
+</div>
+
+
+</el-card>
 
 
 
