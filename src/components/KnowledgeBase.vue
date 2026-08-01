@@ -1,10 +1,30 @@
 <script setup>
 
+import {ref} from "vue"
 import {useKnowledgeStore} from "@/stores/knowledge"
-
+import {ElMessage} from "element-plus"
 
 const store = useKnowledgeStore()
 
+const kbInput = ref(
+    store.kbName
+)
+
+function changeKnowledgeBase(){
+    if(!kbInput.value){
+          ElMessage.warning(
+              "请输入知识库名称"
+          )
+          return
+      }
+
+    store.kbName = kbInput.value
+
+    ElMessage.success(
+        "知识库已切换"
+    )
+
+}
 
 </script>
 
@@ -17,13 +37,11 @@ const store = useKnowledgeStore()
 
 
 <el-input
-v-model="store.kbName"
+    v-model="kbInput"
+    placeholder="输入知识库名称"
+    @keyup.enter="changeKnowledgeBase"
 />
 
 
 </el-card>
 </template>
-
-<style scoped>
-
-</style>

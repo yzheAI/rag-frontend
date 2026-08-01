@@ -9,10 +9,21 @@ const store = useKnowledgeStore()
 
 
 async function getFiles(){
-    // GET请求，通过url传参kb_name筛选知识库
-    const res = await getFileList(store.kbName)
+    try{
 
-    store.files = res.data.data.files
+        const res = await getFileList(store.kbName)
+
+        store.files=res.data.data.files
+
+    }catch(error){
+
+        store.files=[]
+
+        ElMessage.error(
+            "知识库不存在"
+        )
+
+    }
 
 }
 
@@ -25,6 +36,9 @@ watch(
     ()=>store.kbName,
     ()=>{
         getFiles()
+    },
+    {
+        immediate:true
     }
 )
 
@@ -53,11 +67,15 @@ async function deleteFile(id){
     )
     // 删除后刷新列表
     await getFiles()
+
+    ElMessage.success(
+    "删除成功"
+    )
   }catch(error){
 
         // 用户点击取消时不处理
 
-        if(error !== "cancel"){
+        if(error !== "cancel" && error !== "close"){
             ElMessage.error("删除失败")
         }
 

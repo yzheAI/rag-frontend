@@ -1,6 +1,7 @@
 <script setup>
 import { useKnowledgeStore } from "@/stores/knowledge"
 import {ref, computed} from "vue";
+import { ElMessage } from "element-plus"
 const store=useKnowledgeStore()
 
 
@@ -144,6 +145,11 @@ async function chat(){
 function clearChat(){
   store.messages=[]
   store.sources=[]
+
+  ElMessage.success(
+      "对话已清空"
+  )
+
 }
 
 </script>
