@@ -37,6 +37,7 @@ async function chat(){
         content:""
     }
     store.messages.push(aiMessage)
+
   try {
     // 调用后端流式对话接口
     const response = await fetch(
@@ -67,6 +68,13 @@ async function chat(){
     // 获取响应流读取器，分片读取后端持续推送的数据块
     const reader = response.body.getReader()
 
+    let buffer = ""
+
+    const decoder = new TextDecoder()
+
+
+    const aiIndex =
+        store.messages.length - 1
 
     while (true) {
 
@@ -80,11 +88,11 @@ async function chat(){
         break
 
 
-      const text =
-          new TextDecoder()
-              .decode(value)
+       buffer += decoder.decode(value)
 
-      const events = text.split("\n\n")
+      const events = buffer.split("\n\n")
+
+      buffer = events.pop()
 
 
       for (const event of events) {
@@ -112,7 +120,7 @@ async function chat(){
               event.split("data: ")[1]
 
 
-          aiMessage.content += token
+          store.messages[aiIndex].content += token
 
         }
 
@@ -127,8 +135,7 @@ async function chat(){
         )
 
 
-        aiMessage.content =
-            "抱歉，服务暂时不可用，请稍后再试。"
+        store.messages[aiIndex].content = "抱歉，服务暂时不可用，请稍后再试。"
 
 
 
