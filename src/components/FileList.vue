@@ -2,7 +2,7 @@
 import {getFileList} from "@/api/file"
 import {onMounted, watch} from "vue"
 import {useKnowledgeStore} from "@/stores/knowledge"
-import axios from "axios"
+import request from "@/api/request"
 import { ElMessageBox, ElMessage } from "element-plus"
 
 const store = useKnowledgeStore()
@@ -57,7 +57,7 @@ async function deleteFile(id){
     )
 
     // 发出delete请求，id拼接在url路径上
-    await axios.delete(
+    await request.delete(
         `http://127.0.0.1:8000/files/${id}`,
         {
           params: {

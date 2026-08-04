@@ -1,18 +1,18 @@
-import axios from "axios"
+import request from "./request"
 
 
 const BASE_URL = "http://127.0.0.1:8000/knowledge_bases"
 
 
 export async function getAllKnowledgeBases(){
-    return await axios.get(
+    return await request.get(
         `${BASE_URL}/all`
     )
 }
 
 
 export async function createKnowledgeBase(kbName){
-    return await axios.post(
+    return await request.post(
         `${BASE_URL}/`,
         {
             name: kbName
@@ -23,14 +23,14 @@ export async function createKnowledgeBase(kbName){
 
 
 export async function getKnowledgeBase(kbName){
-    return await axios.get(
+    return await request.get(
         `${BASE_URL}/${kbName}`
     )
 }
 
 
 export async function deleteKnowledgeBase(kbName){
-    return await axios.delete(
+    return await request.delete(
         `${BASE_URL}/${kbName}`
     )
 }

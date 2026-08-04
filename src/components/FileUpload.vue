@@ -1,9 +1,9 @@
 <script setup>
-import axios from "axios";
-import {ref} from "vue";
-import {useKnowledgeStore} from "@/stores/knowledge";
+import request from "@/api/request"
+import {ref} from "vue"
+import {useKnowledgeStore} from "@/stores/knowledge"
 import {getFileList} from "@/api/file"
-import {ElMessage} from "element-plus";
+import {ElMessage} from "element-plus"
 const store=useKnowledgeStore()
 const file = ref(null)
 const uploading = ref(false)
@@ -41,7 +41,7 @@ async function upload(){
     )
 
     // 发起 POST 请求
-    await axios.post(
+    await request.post(
         "http://127.0.0.1:8000/files/",
         formData
     )
