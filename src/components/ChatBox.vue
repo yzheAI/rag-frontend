@@ -2,6 +2,8 @@
 import { useKnowledgeStore } from "@/stores/knowledge"
 import {ref, computed} from "vue";
 import { ElMessage } from "element-plus"
+import {createConversation, getConversations} from "@/api/chat";
+
 const store=useKnowledgeStore()
 
 
@@ -53,7 +55,10 @@ async function chat(){
 
             query: userQuestion,
 
-            kb_name: store.kbName
+            kb_name: store.kbName,
+
+            conversation_id:
+              store.conversationId
 
           })
         }
@@ -101,6 +106,22 @@ async function chat(){
 
         if (!event.trim())
           continue
+
+        if(event.startsWith("event: conversation")){
+
+
+          const json =
+              event.split("data: ")[1]
+
+
+          const data =
+              JSON.parse(json)
+
+
+          store.conversationId =
+              data.conversation_id
+
+        }
 
 
         if (event.startsWith("event: source")) {
@@ -151,12 +172,44 @@ async function chat(){
 
 }
 
+async function newConversation(){
+
+    const res =
+        await createConversation(
+            store.kbName
+        )
+
+
+    store.conversationId =
+        res.data.conversation_id
+
+
+    store.messages=[]
+    store.sources=[]
+
+  const conversations =
+        await getConversations(
+            store.kbName
+        )
+
+
+    store.conversations =
+        conversations.data
+
+
+    ElMessage.success(
+        "新会话创建成功"
+    )
+
+}
+
 function clearChat(){
   store.messages=[]
   store.sources=[]
+  store.conversationId=null
 
   ElMessage.success(
-      "对话已清空"
+      "已创建新对话"
   )
 
 }
@@ -216,6 +269,14 @@ type="success"
 >
 发送
 </el-button>
+
+  <el-button
+type="primary"
+@click="newConversation"
+>
+新建会话
+</el-button>
+
 
 <el-button
 type="danger"

@@ -75,6 +75,10 @@ function switchKB(name){
 
     store.kbName=name
 
+    store.conversationId=null
+    store.messages=[]
+
+
     ElMessage.success(
         "切换成功"
     )

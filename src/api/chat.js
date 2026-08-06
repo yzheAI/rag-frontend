@@ -1,11 +1,35 @@
-<script setup>
+import request from "./request"
 
-</script>
 
-<template>
+export function createConversation(kb_name){
+    return request.post(
+        "/chat/create_conversation",
+        null,
+        {
+            params:{
+                kb_name
+            }
+        }
+    )
+}
 
-</template>
 
-<style scoped>
+export function getConversations(kb_name){
+    return request.get(
+        "/chat/conversations",
+        {
+            params:{
+                kb_name
+            }
+        }
+    )
+}
 
-</style>
+
+export function getMessages(conversation_id){
+
+    return request.get(
+        `/chat/messages/${conversation_id}`
+    )
+
+}

@@ -7,9 +7,11 @@ export const useKnowledgeStore = defineStore(
      kbName:"copper_based",
 
      knowledgeBases:[],
-
      files:[],
      sources:[],
-     messages:[]
+     messages:[],
+
+     conversationId:null,
+     conversations:[]
  })
 })
