@@ -33,3 +33,12 @@ export function getMessages(conversation_id){
     )
 
 }
+
+
+export function deleteConversation(conversation_id){
+
+    return request.delete(
+        `/chat/conversation/${conversation_id}`
+    )
+
+}
