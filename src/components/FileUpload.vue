@@ -28,40 +28,43 @@ async function upload(){
   try {
 
     const formData = new FormData()
-    // 追加文件字段，后端接收参数字段为 file
+
     formData.append(
         "file",
         file.value
     )
-
 
     formData.append(
         "kb_name",
         store.kbName
     )
 
-    // 发起 POST 请求
+
     await request.post(
-        "http://127.0.0.1:8000/files/",
+        "/files/",
         formData
     )
 
 
-    alert("上传成功")
-    // 上传完成后，重新拉取文档列表，刷新页面表格
-    const res = await getFileList(store.kbName)
+    ElMessage.success(
+        "文件已提交处理"
+    )
 
 
-    store.files = res.data.data.files
-  }catch(error){
+}catch(error){
 
-        ElMessage.error("上传失败")
+    console.error(error)
 
-    }finally{
+    ElMessage.error(
+        error.response?.data?.detail
+        || "上传失败"
+    )
 
-        uploading.value=false
+}finally{
 
-    }
+    uploading.value=false
+
+}
 
 }
 </script>

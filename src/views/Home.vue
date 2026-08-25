@@ -6,6 +6,7 @@ import FileList from "@/components/FileList.vue"
 import ChatBox from "@/components/ChatBox.vue"
 import SourceList from "@/components/SourceList.vue"
 import ConversationList from "@/components/ConversationList.vue"
+import TaskList from "@/components/TaskList.vue"
 
 
 </script>
@@ -35,6 +36,7 @@ AI知识库助手
 
         <FileUpload />
 
+        <TaskList/>
 
         <FileList />
 
@@ -42,7 +44,7 @@ AI知识库助手
     </el-col>
 
 
-    <el-col :span="5">
+    <el-col :span="4">
 
       <ConversationList />
 
@@ -51,7 +53,7 @@ AI知识库助手
 
 
     <!-- 右侧问答 -->
-    <el-col :span="13">
+    <el-col :span="14">
 
 
         <ChatBox />

@@ -10,6 +10,7 @@ export const useKnowledgeStore = defineStore(
      files:[],
      sources:[],
      messages:[],
+     tasks:[],
 
      conversationId:null,
      conversations:[]
