@@ -7,6 +7,7 @@ import {ElMessage} from "element-plus"
 const store=useKnowledgeStore()
 const file = ref(null)
 const uploading = ref(false)
+const documentType = ref('')
 
 
 function chooseFile(e){
@@ -37,6 +38,11 @@ async function upload(){
     formData.append(
         "kb_name",
         store.kbName
+    )
+
+    formData.append(
+        'document_type',
+        documentType.value
     )
 
 
@@ -71,6 +77,23 @@ async function upload(){
 
 <template>
 <el-card>
+<el-form-item label="文档类型">
+  <el-select
+    v-model="documentType"
+    placeholder="请选择文档类型"
+  >
+    <el-option label="设备手册" value="equipment" />
+    <el-option label="操作手册" value="operation" />
+    <el-option label="诊断手册" value="diagnosis" />
+    <el-option label="调试手册" value="commissioning" />
+    <el-option label="编程手册" value="programming" />
+    <el-option label="参数手册" value="parameter" />
+    <el-option label="功能手册" value="function" />
+    <el-option label="安全手册" value="safety" />
+    <el-option label="安装手册" value="installation" />
+  </el-select>
+</el-form-item>
+
 
 <h3>
 上传文档

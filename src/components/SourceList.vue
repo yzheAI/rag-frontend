@@ -39,7 +39,7 @@ shadow="hover"
 <el-tag type="success">
 
 匹配度:
-{{(item.score*100).toFixed(1)}}%
+{{item.score.toFixed(3)}}
 
 </el-tag>
 
